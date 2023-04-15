@@ -58,10 +58,10 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < this.ghosts.Length; i++)
         {
-            this.ghosts[i].gameObject.SetActive(false);
+            this.ghosts[i].ResetState();
         }
 
-        this.pacman.gameObject.SetActive(false);
+        this.pacman.ResetState();
     }
 
     private void SetScore(int score)
