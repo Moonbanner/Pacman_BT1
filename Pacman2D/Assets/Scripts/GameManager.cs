@@ -109,10 +109,14 @@ public class GameManager : MonoBehaviour
 
     public void PowerPelletEaten(PowerPellet pellet)
     {
+        for (int i=0; i<this.ghosts.Length; i++)
+        {
+            this.ghosts[i].frightened.Enable(pellet.duration);
+        }
+
         PelletEaten(pellet);
         CancelInvoke();
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);
-        //TODO: changing ghosts's state
     }
 
     private bool HasPelletsLeft() //named HasRemainingPellets in video
