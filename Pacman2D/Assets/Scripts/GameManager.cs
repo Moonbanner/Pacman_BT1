@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (Transform pellet in this.pellets)
         {
-            pellets.gameObject.SetActive(true);
+            pellet.gameObject.SetActive(true);
         }
 
         ResetState();
@@ -57,10 +57,10 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < this.ghosts.Length; i++)
         {
-            this.ghosts[i].gameObject.SetActive(true);
+            this.ghosts[i].ResetState();
         }
 
-        this.pacman.gameObject.SetActive(true);
+        this.pacman.ResetState();
     }
 
     private void GameOver()
@@ -97,8 +97,8 @@ public class GameManager : MonoBehaviour
         SetLives(this.lives - 1);
         if (this.lives > 0)
         {
-            this.audioSource.PlayOneShot(pacmaneatenClip);
             Invoke(nameof(ResetState), 2.0f);
+            this.audioSource.PlayOneShot(pacmaneatenClip);
         }
         else 
         {
