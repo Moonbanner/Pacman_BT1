@@ -8,6 +8,15 @@ public class GameManager : MonoBehaviour
 
     public Transform pellets;
 
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private AudioClip pacmaneatenClip;
+    [SerializeField]
+    private AudioClip gameoverClip;
+    [SerializeField]
+    private AudioClip gamewonClip;
+
     public int ghostMultiplier { get; private set; } = 1;
     public int score { get; private set; }
     public int lives { get; private set; }
@@ -56,6 +65,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        this.audioSource.PlayOneShot(gameoverClip);
         for (int i = 0; i < this.ghosts.Length; i++)
         {
             this.ghosts[i].ResetState();
@@ -86,6 +96,7 @@ public class GameManager : MonoBehaviour
         SetLives(this.lives - 1);
         if (this.lives > 0)
         {
+            this.audioSource.PlayOneShot(pacmaneatenClip);
             Invoke(nameof(ResetState), 2.0f);
         }
         else 
@@ -104,6 +115,7 @@ public class GameManager : MonoBehaviour
         {
             this.pacman.gameObject.SetActive(false);
             Invoke(nameof(NewRound), 2.0f);
+            this.audioSource.PlayOneShot(gamewonClip);
         }
     }
 

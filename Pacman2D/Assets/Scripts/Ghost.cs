@@ -50,7 +50,7 @@ public class Ghost : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Pacman"))
         {
-            if (this.enabled)
+            if (frightened.enabled)
             {
                 FindObjectOfType<GameManager>().GhostEaten(this);
             }
