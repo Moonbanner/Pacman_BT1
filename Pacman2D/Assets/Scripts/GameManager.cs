@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public Ghost[] ghosts;
@@ -7,6 +7,10 @@ public class GameManager : MonoBehaviour
     public Pacman pacman;
 
     public Transform pellets;
+
+    public Text gameOverText;
+    public Text scoreText;
+    public Text livesText;
 
     [SerializeField]
     private AudioSource audioSource;
@@ -43,6 +47,7 @@ public class GameManager : MonoBehaviour
 
     private void NewRound()
     {
+        gameOverText.enabled = false;
         foreach (Transform pellet in this.pellets)
         {
             pellet.gameObject.SetActive(true);
@@ -65,6 +70,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        gameOverText.enabled = true;
         this.audioSource.PlayOneShot(gameoverClip);
         for (int i = 0; i < this.ghosts.Length; i++)
         {
@@ -77,11 +83,13 @@ public class GameManager : MonoBehaviour
     private void SetScore(int score)
     {
         this.score = score;
+        scoreText.text = score.ToString().PadLeft(2, '0');
     }
 
     private void SetLives(int lives)
     {
         this.lives = lives;
+        livesText.text = "x" + lives.ToString();
     }
 
     public void GhostEaten(Ghost ghost)
