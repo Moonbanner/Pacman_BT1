@@ -190,4 +190,14 @@ public class GameManager : MonoBehaviour, IDataPersistence
         highestScoreText.text = "highest: " + highestScore.ToString().PadLeft(2, '0');
         livesText.text = "x" + lives.ToString();
     }
+
+    public void NewGameButtonClick()
+    {
+        this.NewGame();
+    }
+
+    public void QuitButtonClick()
+    {
+        Application.Quit();
+    }
 }
