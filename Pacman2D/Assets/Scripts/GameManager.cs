@@ -1,16 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IDataPersistence
 {
     public Ghost[] ghosts;
-
     public Pacman pacman;
-
     public Transform pellets;
 
     public Text gameOverText;
     public Text scoreText;
     public Text livesText;
+    public Text highestScoreText;
 
     [SerializeField]
     private AudioSource audioSource;
@@ -24,10 +23,13 @@ public class GameManager : MonoBehaviour
     public int ghostMultiplier { get; private set; } = 1;
     public int score { get; private set; }
     public int lives { get; private set; }
+    public int highestScore { get; private set; } = 0;
 
     private void Start()
     {
-        NewGame();
+        //NewGame();
+        this.pacman.transform.position = this.pacman.position;
+        this.pacman.movement.SetDirection(this.pacman.direction);
     }
 
     private void Update()
@@ -38,7 +40,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void NewGame()
+    public void NewGame()
     {
         SetScore(0);
         SetLives(3);
@@ -74,10 +76,10 @@ public class GameManager : MonoBehaviour
         this.audioSource.PlayOneShot(gameoverClip);
         for (int i = 0; i < this.ghosts.Length; i++)
         {
-            this.ghosts[i].ResetState();
+            this.ghosts[i].gameObject.SetActive(false);
         }
 
-        this.pacman.ResetState();
+        this.pacman.gameObject.SetActive(false);
     }
 
     private void SetScore(int score)
@@ -100,7 +102,7 @@ public class GameManager : MonoBehaviour
 
     public void PacmanEaten()
     {
-        pacman.DeathSequence();
+        this.pacman.DeathSequence();
         //this.pacman.gameObject.SetActive(false);
         SetLives(this.lives - 1);
         if (this.lives > 0)
@@ -111,19 +113,24 @@ public class GameManager : MonoBehaviour
         else 
         {
             GameOver();
+            if (this.score > this.highestScore)
+            {
+                this.highestScore = this.score;
+                highestScoreText.text = "highest: " + highestScore.ToString().PadLeft(2, '0');
+            }
         }
     }
 
     public void PelletEaten(Pellet pellet)
     {
         pellet.gameObject.SetActive(false);
-
-        SetScore(this.score + pellet.points);
+        pellet.collected = true;
+        SetScore(this.score + pellet.point);
 
         if (!HasPelletsLeft())
         {
             this.pacman.gameObject.SetActive(false);
-            Invoke(nameof(NewRound), 2.0f);
+            Invoke(nameof(NewRound), 3.0f);
             this.audioSource.PlayOneShot(gamewonClip);
         }
     }
@@ -156,5 +163,31 @@ public class GameManager : MonoBehaviour
     private void ResetGhostMultiplier()
     {
         this.ghostMultiplier = 1;
+    }
+
+    public void LoadData(GameData data)
+    {
+        this.score = data.score;
+        this.highestScore = data.highestScore;
+        this.lives = data.lives;
+        this.pacman.position = data.playerPosition;
+        this.pacman.direction = data.pacmanDirection;
+        this.LoadDisplay();
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.score = this.score;
+        data.highestScore = this.highestScore;
+        data.lives = this.lives;
+        data.playerPosition = this.pacman.transform.position;
+        data.pacmanDirection = this.pacman.movement.direction;
+    }
+
+    public void LoadDisplay()
+    {
+        scoreText.text = score.ToString().PadLeft(2, '0');
+        highestScoreText.text = "highest: " + highestScore.ToString().PadLeft(2, '0');
+        livesText.text = "x" + lives.ToString();
     }
 }

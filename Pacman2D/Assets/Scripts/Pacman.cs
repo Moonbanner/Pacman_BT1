@@ -7,6 +7,8 @@ public class Pacman : MonoBehaviour
     public SpriteRenderer spriteRenderer { get; private set; }
     public new Collider2D collider { get; private set; }
     public Movement movement { get; private set; }
+    public Vector3 position;
+    public Vector2 direction;
 
     private void Awake()
     {
@@ -59,4 +61,5 @@ public class Pacman : MonoBehaviour
         deathSequence.spriteRenderer.enabled = true;
         deathSequence.Restart();
     }
+
 }
